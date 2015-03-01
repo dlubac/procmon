@@ -7,6 +7,7 @@ def main():
   parser = OptionParser()
   parser.add_option('-o', '--output', action='store', dest='filename', default='output.csv', help='Output file name/location. Default is output.csv', metavar='OUTPUT')
   parser.add_option('-p', '--process-name', action='store', dest='procname', help='Process name', metavar='PROCESS')
+  parser.add_option('-t', '--title', action='store', dest='title', default='FALSE', help='Specifies whether to include a title row', metavar='BOOLEAN')
   (options, args) = parser.parse_args()
 
   # Check if there is a process name argument
@@ -20,7 +21,8 @@ def main():
 
   # Create file and write header line
   f = open(filename, 'w')
-  f.write('Time, RAM, CPU\n')
+  if options.title == 'TRUE':
+    f.write('Time, RAM, CPU\n')
 
   # Handle ctrl-c interrupt, close file gracefully
   def signal_handler(signal, frame):
@@ -43,7 +45,7 @@ def main():
         totalmem = totalmem + proc.memory_percent()
         totalcpu = totalcpu + proc.cpu_percent(interval = None)
 
-    f.write(timestamp + ', ' + repr(totalmem) + ', ' + repr(totalcpu) +'\n')
+    f.write(timestamp + ',' + repr(totalmem) + ',' + repr(totalcpu) +'\n')
     time.sleep(1)
 
 if __name__ == '__main__':
